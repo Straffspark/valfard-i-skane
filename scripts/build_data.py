@@ -7,6 +7,7 @@ import json
 import sys
 import time
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 
 API = "https://api.kolada.se/v3"
@@ -100,11 +101,9 @@ def main():
     kommuner = {m["id"]: m["title"] for m in muns if m["type"] == "K"}
     print(f"{len(kommuner)} kommuner", file=sys.stderr)
 
-    raw = {}
-    for key, kpi, *_ in MEASURES:
-        raw[kpi] = fetch_kpi(kpi)
-    for key, (kpi, _) in FALLBACK.items():
-        raw[kpi] = fetch_kpi(kpi)
+    kpis = [m[1] for m in MEASURES] + [fb[0] for fb in FALLBACK.values()]
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        raw = dict(zip(kpis, pool.map(fetch_kpi, kpis)))
 
     better = {m[0]: m[5] for m in MEASURES}
     kpi_of = {m[0]: m[1] for m in MEASURES}
