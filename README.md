@@ -4,6 +4,12 @@ En webbapp som visar hur Skånes 33 kommuner placerar sig bland Sveriges 290 kom
 
 **Appen:** https://straffspark.github.io/valfard-i-skane/
 
+## Lösenord och offline
+
+Appen öppnas med ett lösenord. Spärren är enkel: den hindrar vanliga besökare men skyddar inte datan, eftersom `data.json` och koden är offentliga.
+
+Appen fungerar utan internet. Öppna den en gång med uppkoppling, så sparas sidan och datan på enheten. Den kan också installeras som app (Lägg till på hemskärmen i mobilen, eller installera-ikonen i adressfältet i Chrome och Edge). Med uppkoppling hämtas alltid den senaste datan.
+
 ## Mått
 
 Ekonomi: mediannettoinkomst, låg ekonomisk standard (alla och barn), ekonomiskt bistånd.

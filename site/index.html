@@ -5,9 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Välfärdsindex för Skånes kommuner</title>
 <meta name="description" content="Hur mår Skånes kommuner? Ett välfärdsindex av 19 mått från Kolada, år för år sedan 2002.">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#c2410c">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
+<div id="gate" class="gate">
+  <form id="gate-form" class="gate-box">
+    <h1>Välfärdsindex för Skånes kommuner</h1>
+    <label for="pw">Lösenord</label>
+    <input id="pw" type="password" autocomplete="current-password" required autofocus>
+    <button type="submit">Öppna</button>
+    <p id="gate-msg" class="gate-msg" hidden>Fel lösenord.</p>
+  </form>
+</div>
+<div id="app" hidden>
 <header class="top">
   <div class="wrap">
     <h1>Hur mår Skånes kommuner?</h1>
@@ -63,11 +77,13 @@
     <p>Indexet beskriver nivåer. Det tar inte hänsyn till befolkningens sammansättning och säger inte vad en kommun själv kan påverka. Valdeltagandet ändras bara vid val.</p>
     <p>Ladda ner datan: <a href="index.csv">index för alla kommuner (CSV)</a>, <a href="varden_skane.csv">alla värden för Skåne (CSV)</a>, <a href="data.json">allt (JSON)</a>.</p>
     <p class="muted" id="meta"></p>
+    <p class="muted" id="offline"></p>
   </section>
 </main>
 
+</div>
 <div class="tip" id="tip" hidden></div>
-<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-<script src="app.js?v=3"></script>
+<script src="d3.min.js"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

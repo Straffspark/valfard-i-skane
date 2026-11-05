@@ -1,5 +1,26 @@
 /* Välfärdsindex för Skånes kommuner. Data: data.json, byggd av scripts/build_data.py från Kolada. */
-(async function () {
+// Enkel lösenordsspärr. Den hindrar vanliga besökare men skyddar inte datan: data.json och koden är offentliga.
+const PW_HASH = '8a237bdd4aa06a777c459df041e18462556098d6a72553194aa5e11f914dd6c0';
+const KEY = 'valfard-upplast';
+const sha256 = async t => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))].map(b => b.toString(16).padStart(2, '0')).join('');
+const remembered = () => { try { return localStorage.getItem(KEY) === PW_HASH; } catch (e) { return false; } };
+function unlock() {
+  document.getElementById('gate').hidden = true;
+  document.getElementById('app').hidden = false;
+  start();
+}
+if (remembered()) unlock();
+else document.getElementById('gate-form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const h = await sha256(document.getElementById('pw').value);
+  if (h === PW_HASH) { try { localStorage.setItem(KEY, h); } catch (e) {} unlock(); }
+  else document.getElementById('gate-msg').hidden = false;
+});
+if ('serviceWorker' in navigator) {
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+
+async function start() {
   const D = await fetch('data.json', {cache: 'no-cache'}).then(r => r.json());
   const $ = s => document.querySelector(s);
   const name = id => id === '0000' ? 'Riket' : D.kommuner[id];
@@ -193,7 +214,9 @@
 
   function render() { tiles(); trend(); heat(); profile(); measure(); }
   $('#meta').textContent = `Data hämtad ${D.skapad.slice(0, 10)}. ${D.kalla}.`;
+  const off = () => { $('#offline').textContent = navigator.onLine ? 'Appen fungerar även utan internet när den har öppnats en gång på den här enheten.' : 'Du är offline och ser den senast sparade datan.'; };
+  addEventListener('online', off); addEventListener('offline', off); off();
   render();
   let w = innerWidth;
   addEventListener('resize', () => { if (Math.abs(innerWidth - w) > 40) { w = innerWidth; trend(); measure(); } });
-})();
+}
