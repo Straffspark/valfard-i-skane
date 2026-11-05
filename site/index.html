@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Välfärdsindex för Skånes kommuner</title>
+<meta name="description" content="Hur mår Skånes kommuner? Ett välfärdsindex av 19 mått från Kolada, år för år sedan 2002.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>Hur mår Skånes kommuner?</h1>
+    <p class="lead">Ett välfärdsindex av 19 officiella mått för ekonomi, arbete, utbildning, hälsa, trygghet, boende och delaktighet. Varje kommun placeras bland Sveriges 290 kommuner, år för år.</p>
+    <div class="controls">
+      <label>Kommun <select id="kommun"></select></label>
+      <label>Jämför med <select id="jamfor"><option value="">Ingen</option></select></label>
+      <label>Index
+        <select id="indextyp">
+          <option value="index">Välfärdsindex (alla mått som finns respektive år)</option>
+          <option value="karnindex">Kärnindex (7 mått som finns alla år)</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="tiles" id="tiles"></section>
+
+  <section class="card">
+    <h2 id="trend-title">Placering över tid</h2>
+    <p class="note">Plats bland Sveriges kommuner, där 1 är bäst. Grå linjer visar övriga skånska kommuner. Siffrorna under diagrammet anger hur många mått indexet bygger på respektive år.</p>
+    <div class="chart" id="trend"></div>
+  </section>
+
+  <section class="card">
+    <h2>Skånes kommuner år för år</h2>
+    <p class="note">Plats i indexet bland Sveriges kommuner. Mörkare grön är bättre, mörkare röd sämre. Klicka på en kommun för att välja den, och på en kolumnrubrik för att sortera.</p>
+    <div class="tablewrap"><table id="heat" class="heat"></table></div>
+  </section>
+
+  <section class="card">
+    <h2 id="profile-title">Profil</h2>
+    <p class="note">Senaste år för varje mått. Plats avser placeringen bland Sveriges kommuner, där 1 är bäst. Förändringen jämför med det första året som finns för måttet.</p>
+    <div class="tablewrap"><table id="profile"></table></div>
+  </section>
+
+  <section class="card">
+    <h2>Mått för mått</h2>
+    <div class="controls inline">
+      <label>Mått <select id="matt"></select></label>
+    </div>
+    <p class="note" id="matt-note"></p>
+    <div class="chart" id="measure"></div>
+    <div class="tablewrap"><table id="measure-table"></table></div>
+  </section>
+
+  <section class="card method">
+    <h2>Så är indexet gjort</h2>
+    <p>Alla värden hämtas från Kolada, där ursprungskällorna bland annat är SCB, Arbetsförmedlingen, Försäkringskassan, BRÅ, Folkhälsomyndigheten och Skolverket. För varje mått och år rangordnas alla kommuner. Indexvärdet är snittet av kommunens placeringar, och kommunerna sorteras sedan efter det snittet.</p>
+    <p>Alla 19 mått finns inte för alla år. Ett mått räknas in ett år när minst 280 kommuner har värden. Därför bygger indexet på färre mått de första åren och på alla 19 från 2020. Före 2023 används Arbetsförmedlingens serie för arbetslösa av befolkningen i stället för SCB:s BAS-serie. Kärnindexet använder bara de sju mått som finns för alla år sedan 2002 och passar bättre när man jämför början och slutet av perioden.</p>
+    <p>Indexet beskriver nivåer. Det tar inte hänsyn till befolkningens sammansättning och säger inte vad en kommun själv kan påverka. Valdeltagandet ändras bara vid val.</p>
+    <p class="muted" id="meta"></p>
+  </section>
+</main>
+
+<div class="tip" id="tip" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
