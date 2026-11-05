@@ -23,7 +23,7 @@
     kommun: skane.includes(hash.get('kommun')) ? hash.get('kommun') : (skane.includes('1282') ? '1282' : skane[0]),
     jamfor: skane.includes(hash.get('jamfor')) ? hash.get('jamfor') : '',
     idx: hash.get('index') === 'karnindex' ? 'karnindex' : 'index',
-    matt: measures.some(m => m.key === hash.get('matt')) ? hash.get('matt') : 'arbl',
+    matt: measures.some(m => m.key === hash.get('matt')) ? hash.get('matt') : 'arbl_af',
     sort: {col: 'last', dir: 1},
   };
 
@@ -81,8 +81,13 @@
 
   function lineChart(el, {xs, series, yDomain, invert, yLabel, below, tipFmt}) {
     el.replaceChildren();
-    const W = Math.max(320, el.clientWidth), H = 340, m = {t: 14, r: 120, b: below ? 46 : 28, l: 46};
+    const W = Math.max(320, el.clientWidth), H = 340, m = {t: 14, r: 20, b: below ? 46 : 28, l: 46};
     const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`);
+    for (const s of series.filter(s => s.label)) {
+      const lp = s.pts.filter(p => p[1] != null).pop(); if (!lp) continue;
+      const pr = svg.append('text').style('font-weight', 600).text(`${s.label} ${tipFmt(lp[1])}`);
+      m.r = Math.max(m.r, pr.node().getComputedTextLength() + 18); pr.remove();
+    }
     const x = d3.scaleLinear(d3.extent(xs), [m.l, W - m.r]);
     const y = invert ? d3.scaleLinear(yDomain, [m.t, H - m.b]) : d3.scaleLinear(yDomain, [H - m.b, m.t]).nice();
     svg.append('g').attr('class', 'grid').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).tickValues(invert ? [1, 50, 100, 150, 200, 250, 290] : null).ticks(6).tickSize(-(W - m.l - m.r)).tickFormat(d3.format('~s')));
@@ -138,7 +143,7 @@
       const tr = tb.insertRow(); if (r.id === state.kommun) tr.className = 'sel';
       tr.onclick = () => { state.kommun = r.id; $('#kommun').value = r.id; sync(); };
       tr.insertCell().textContent = r.n;
-      for (const y of ys) { const c = tr.insertCell(); const v = r.v[y]; c.textContent = v ?? '–'; if (v != null) { c.className = 'c'; c.style.background = color(v); } }
+      for (const y of ys) { const c = tr.insertCell(); const v = r.v[y]; c.textContent = v ?? '–'; if (v != null) { const bg = color(v); c.className = 'c'; c.style.background = bg; c.style.color = d3.hsl(bg).l < 0.45 ? '#fff' : '#111'; } }
     }
   }
 

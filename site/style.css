@@ -38,7 +38,6 @@ th:first-child { z-index: 3; }
 td.wrap { white-space: normal; min-width: 16rem; }
 tr.sel td { font-weight: 700; }
 tr.sel td:first-child { color: var(--accent); }
-.heat td.c { color: #111; }
 .heat tbody tr { cursor: pointer; }
 .good { color: var(--ok); } .bad { color: var(--bad); } .muted { color: var(--muted); }
 .method p { max-width: 60rem; font-size: .9rem; }
@@ -46,3 +45,4 @@ tr.sel td:first-child { color: var(--accent); }
 .tip .t { color: var(--muted); }
 .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .8rem; color: var(--muted); margin-top: 6px; }
 .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+a { color: var(--accent2); }

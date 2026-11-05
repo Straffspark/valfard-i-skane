@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -26,10 +26,12 @@ jobs:
           python-version: "3.12"
       - name: Hämta data från Kolada och räkna index
         run: python scripts/build_data.py
-      - uses: actions/upload-artifact@v4
-        with:
-          name: data
-          path: site/data.json
+      - name: Spara datafilerna i grenen data
+        run: |
+          mkdir out && cp site/data.json site/*.csv out/
+          cd out && git init -q -b data && git add -A
+          git -c user.name="github-actions" -c user.email="github-actions@users.noreply.github.com" commit -qm "Data $(date -u +%F)"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" data
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

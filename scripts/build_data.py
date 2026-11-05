@@ -3,6 +3,7 @@
 Körs av GitHub Actions (se .github/workflows/pages.yml) och skriver site/data.json.
 Endast standardbiblioteket används.
 """
+import csv
 import json
 import sys
 import time
@@ -196,6 +197,23 @@ def main():
     }
     with open("site/data.json", "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
+    with open("site/index.csv", "w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["kommun_id", "kommun", "lan", "ar", "plats", "poang", "karn_plats", "karn_poang", "antal_matt"])
+        for y in sorted(index):
+            for k in sorted(kommuner):
+                a, c = index[y].get(k), core_index[y].get(k)
+                w.writerow([k, kommuner[k], "Skåne" if k in skane else "", y, a and a["plats"], a and a["poang"],
+                            c and c["plats"], c and c["poang"], len(used[y])])
+    with open("site/varden_skane.csv", "w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["kommun_id", "kommun", "matt", "kolada_id", "omrade", "namn", "enhet", "battre", "ar", "varde", "plats_i_sverige"])
+        for m in measures_out:
+            for k in sorted(values[m["key"]]):
+                for y, v in values[m["key"]][k].items():
+                    r = out["placering"].get(m["key"], {}).get(k, {}).get(y) if not m.get("reserv_for") else None
+                    w.writerow([k, "Riket" if k == "0000" else kommuner[k], m["key"], m["kolada"], m["omrade"], m["namn"],
+                                m["enhet"], m["battre"], y, v, r])
     lk = {y: index[y].get("1282", {}).get("plats") for y in sorted(index)}
     print("Landskrona:", lk, file=sys.stderr)
 
