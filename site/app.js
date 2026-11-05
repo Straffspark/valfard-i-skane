@@ -1,6 +1,6 @@
 /* Välfärdsindex för Skånes kommuner. Data: data.json, byggd av scripts/build_data.py från Kolada. */
 (async function () {
-  const D = await fetch('data.json').then(r => r.json());
+  const D = await fetch('data.json', {cache: 'no-cache'}).then(r => r.json());
   const $ = s => document.querySelector(s);
   const name = id => id === '0000' ? 'Riket' : D.kommuner[id];
   const fmt = (v, unit) => v == null ? '–' : (+v).toLocaleString('sv-SE', {maximumFractionDigits: unit === 'kr' ? 0 : 1});
