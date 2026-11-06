@@ -57,6 +57,7 @@ button, select, input { font: inherit; color: inherit; }
 .picker { position: relative; display: flex; align-items: center; }
 .picker select { appearance: none; -webkit-appearance: none; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 7px 34px 7px 14px; font-family: var(--font-display); font-weight: 600; font-size: 15px; cursor: pointer; max-width: 60vw; }
 .picker::after { content: ""; position: absolute; right: 14px; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: translateY(-2px) rotate(45deg); pointer-events: none; }
+.net { font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: .02em; color: var(--surface); background: var(--muted); border-radius: 999px; padding: 2px 8px; }
 .tabs { display: flex; gap: 2px; }
 .tabs a { text-decoration: none; color: var(--muted); font-family: var(--font-display); font-weight: 600; font-size: 14px; padding: 8px 12px; border-radius: 999px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .tabs a svg { width: 20px; height: 20px; display: none; }
@@ -194,7 +195,7 @@ th:first-child { z-index: 3; }
 <body>
 <header class="top">
   <div class="top-in">
-    <div class="brand"><i aria-hidden="true"></i>Välfärd i Skåne</div>
+    <div class="brand"><i aria-hidden="true"></i>Välfärd i Skåne <span class="net" id="net" hidden></span></div>
     <div class="picker"><select id="pick-k" aria-label="Välj kommun"></select></div>
     <nav class="tabs" aria-label="Vyer">
       <a href="#kommun" data-v="kommun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Kommun</a>
@@ -325,6 +326,7 @@ th:first-child { z-index: 3; }
       <p>Alla värden kommer från Kolada, där ursprungskällorna bland annat är SCB, Arbetsförmedlingen, Försäkringskassan, BRÅ, Folkhälsomyndigheten och Skolverket. För varje mått och år rangordnas alla Sveriges 290 kommuner. Indexvärdet är snittet av kommunens placeringar, och kommunerna sorteras sedan efter det. Plats 1 är bäst.</p>
       <p>Måtten är medianinkomst, låg ekonomisk standard för alla och för barn, ekonomiskt bistånd, sysselsättningsgrad, arbetslöshet, långtidsarbetslöshet, unga som varken arbetar eller studerar, behörighet till gymnasiet, gymnasieexamen, eftergymnasial utbildning, medellivslängd för män och kvinnor, ohälsotal, förtida dödsfall, anmälda våldsbrott, otrygghet, trångboddhet och valdeltagande.</p>
       <p>Alla mått finns inte för alla år. Ett mått räknas in ett år när minst 280 kommuner har värden, så de första åren bygger på färre mått: <span id="o-n"></span>. Före 2023 används Arbetsförmedlingens serie för arbetslöshet. Kärnindexet bygger på de sju mått som finns alla år och är bäst för att jämföra början och slutet av perioden. Indexet beskriver nivåer och tar inte hänsyn till befolkningens sammansättning.</p>
+      <p><b>Offline:</b> Öppna appen en gång med uppkoppling, så sparas sidan, typsnitten och datan på enheten. Därefter fungerar den utan internet. Med uppkoppling hämtas alltid den senaste datan. Du kan också installera den: välj Lägg till på hemskärmen i mobilen, eller installera-ikonen i adressfältet i Chrome och Edge.</p>
       <p>Data hämtad <span id="o-date"></span>. Datan uppdateras från Kolada den 3:e varje månad. Ladda ner: <a href="../index.csv">index för alla kommuner (CSV)</a>, <a href="../varden_skane.csv">alla värden för Skåne (CSV)</a>. Källkod: <a href="https://github.com/Straffspark/valfard-i-skane">github.com/Straffspark/valfard-i-skane</a>. Kolada: <a href="https://www.kolada.se">kolada.se</a>.</p>
     </div>
   </section>
@@ -342,9 +344,20 @@ function compact(F) {
     idx: pick(F.index), karn: pick(F.karnindex), v: F.varden, p};
 }
 if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+let skapad = null;
+function showNet() {
+  const el = document.getElementById('net'), off = !navigator.onLine;
+  el.hidden = !off;
+  if (off) {
+    const d = skapad ? new Date(skapad).toLocaleDateString('sv-SE', {day: 'numeric', month: 'short'}) : '';
+    el.textContent = d ? `Offline · data ${d}` : 'Offline';
+    el.title = 'Ingen uppkoppling. Appen visar den data som sparades senast.';
+  }
+}
+addEventListener('online', showNet); addEventListener('offline', showNet);
 fetch('../data.json', {cache: 'no-cache'}).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-  .then(F => boot(compact(F)))
-  .catch(() => { document.querySelector('main').innerHTML = '<div class="card"><h2>Datan kunde inte laddas</h2><p class="note">Kontrollera uppkopplingen och ladda om sidan. Har du öppnat appen tidigare fungerar den även utan internet.</p></div>'; });
+  .then(F => { skapad = F.skapad; showNet(); boot(compact(F)); })
+  .catch(() => { document.querySelector('main').innerHTML = '<div class="card"><h2>Datan kunde inte laddas</h2><p class="note">Appen behöver internet första gången den öppnas. Anslut och ladda om sidan, så sparas allt på enheten och fungerar sedan även offline.</p></div>'; });
 
 function boot(D) {
 const $ = s => document.querySelector(s);
