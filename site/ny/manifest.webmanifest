@@ -1,0 +1,14 @@
+{
+  "name": "Välfärd i Skåne",
+  "short_name": "Välfärd Skåne",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1f3ee",
+  "theme_color": "#1d4e79",
+  "lang": "sv",
+  "icons": [
+    {"src": "../icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "../icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}

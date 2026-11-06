@@ -4,6 +4,8 @@ En webbapp som visar hur Skånes 33 kommuner placerar sig bland Sveriges 290 kom
 
 **Appen:** https://straffspark.github.io/valfard-i-skane/
 
+**Nya appen (utan lösenord):** https://straffspark.github.io/valfard-i-skane/ny/ – mobilanpassad, med flikar för kommun, Skåne (år för år), jämförelse och mått. Den läser samma `data.json` och uppdateras alltså varje månad.
+
 ## Lösenord och offline
 
 Appen öppnas med ett lösenord. Spärren är enkel: den hindrar vanliga besökare men skyddar inte datan, eftersom `data.json` och koden är offentliga.
